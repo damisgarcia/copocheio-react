@@ -2,13 +2,13 @@ const _ = require('lodash');
 
 const initialState = {
   count: 0,
-  data: []
+  products: []
 }
 
-export function products (state = initialState, action) {
+export function store (state = initialState, action) {
   switch (action.type) {
     case 'FETCH_PRODUCTS':
-      state.data = action.data.map(mapProductArray)
+      state.products = action.data.map(mapProductArray)
       return state
     default:
       return state;

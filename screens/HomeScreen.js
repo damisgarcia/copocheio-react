@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import {
   Image,
   Linking,
@@ -15,25 +16,28 @@ import Store from '../constants/Store';
 
 import { MonoText } from '../components/StyledText';
 
-export default class HomeScreen extends Component {
-  constructor() {
-    super();
-    this.state = Store.dispatcher.getState().products
-  }
+import * as StoreActions from '../actions/store';
 
+export default class HomeScreen extends Component {
   static route = {
     navigationBar: {
       visible: false,
     },
   };
 
+  constructor(props) {
+    super(props);
+  }
+
   componentDidMount() {
     API.fetchProducts().then( (products)=> {
-      Store.dispatcher.dispatch({type:'FETCH_PRODUCTS', data: products})
+      this.props.fetchProducts(products)
     })
   }
 
   render() {
+    let { state } = this.props
+
     return (
       <View style={styles.container}>
         <ScrollView
@@ -45,8 +49,8 @@ export default class HomeScreen extends Component {
               source={require('../assets/images/expo-wordmark.png')}
               style={styles.welcomeImage}
             />
+            <Text>{state.products}</Text>
           </View>
-          <Text>{this.state.data.join(',')}</Text>
         </ScrollView>
 
         <View style={styles.tabBarInfoContainer}>
@@ -114,6 +118,8 @@ export default class HomeScreen extends Component {
     this.setState(Store.dispatcher.getState().products)
   }
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
