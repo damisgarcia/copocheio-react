@@ -10,21 +10,15 @@ import {
   View,
 } from 'react-native';
 
-import { MonoText } from '../components/StyledText';
+import API from '../services/api';
+import Store from '../constants/Store';
 
-import * as reducer from '../stores/topics/reducer';
+import { MonoText } from '../components/StyledText';
 
 export default class HomeScreen extends Component {
   constructor() {
     super();
-
-    this.state = {
-      topics: []
-    }
-  }
-
-  componentDidMount(){
-    this.state.topics.reduce({type: reducer.ACTIONS.REPLACE})
+    this.state = Store.dispatcher.getState().products
   }
 
   static route = {
@@ -32,6 +26,12 @@ export default class HomeScreen extends Component {
       visible: false,
     },
   };
+
+  componentDidMount() {
+    API.fetchProducts().then( (products)=> {
+      Store.dispatcher.dispatch({type:'FETCH_PRODUCTS', data: products})
+    })
+  }
 
   render() {
     return (
@@ -46,7 +46,7 @@ export default class HomeScreen extends Component {
               style={styles.welcomeImage}
             />
           </View>
-          <Text>{this.state.topics}</Text>
+          <Text>{this.state.data.join(',')}</Text>
         </ScrollView>
 
         <View style={styles.tabBarInfoContainer}>
@@ -99,6 +99,20 @@ export default class HomeScreen extends Component {
       'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
     );
   };
+
+  // _handlerIncrement(){
+  //   Store.dispatcher.dispatch({type: 'INCREMENT' })
+  //   this._updateState()
+  // };
+  //
+  // _handlerDecrement(){
+  //   Store.dispatcher.dispatch({type: 'DECREMENT'})
+  //   this._updateState()
+  // };
+
+  _updateState(){
+    this.setState(Store.dispatcher.getState().products)
+  }
 }
 
 const styles = StyleSheet.create({

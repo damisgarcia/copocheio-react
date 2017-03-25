@@ -7,13 +7,18 @@ import { FontAwesome } from '@expo/vector-icons';
 import Router from './navigation/Router';
 import cacheAssetsAsync from './utilities/cacheAssetsAsync';
 
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import Store from './constants/Store';
+
+import {
+  createStore,
+  applyMiddleware,
+  combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
-import * as reducers from './stores/topics/reducer';
+import * as reducer from './stores/topics';
 
-const store = createStore(combineReducers(reducers), applyMiddleware(thunk));
+Store.dispatcher = createStore(combineReducers(reducer), applyMiddleware(thunk));
 
 class AppContainer extends React.Component {
   state = {
@@ -47,7 +52,7 @@ class AppContainer extends React.Component {
   render() {
     if (this.state.appIsReady) {
       return (
-        <Provider store={store}>
+        <Provider store={Store.dispatcher}>
           <View style={styles.container}>
             <NavigationProvider router={Router}>
               <StackNavigation
